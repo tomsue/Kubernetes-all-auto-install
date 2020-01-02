@@ -1,13 +1,14 @@
+#!/usr/bin/env bash
 # 部署Harbor仓库
 # 安装docker-compose
-curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
 # 下载harbor企业级Registry仓库 
 cd ~
-wget https://storage.googleapis.com/harbor-releases/release-1.6.0/harbor-offline-installer-v1.6.3.tgz
-tar zxvf harbor-offline-installer-v1.6.3.tgz
+wget https://storage.googleapis.com/harbor-releases/release-1.10.0/harbor-offline-installer-v1.10.0.tgz
+tar zxvf harbor-offline-installer-v1.10.0.tgz
 cd harbor
 
 # 修改配置文件的hostname与password

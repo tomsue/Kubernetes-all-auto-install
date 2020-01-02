@@ -1,10 +1,11 @@
-echo "--------修改hosts--------"
-cat <<EOF>/etc/hosts
-192.168.168.145 node-192-168-168-145
+#!/usr/bin/env bash
+echo "--------change hosts--------"
+cat >/etc/hosts <<EOF
+192.168.229.130 server02
 EOF
 
 systemctl restart network
-cat <<EOF>/etc/yum.repos.d/kubernetes.repo
+cat >/etc/yum.repos.d/kubernetes.repo <<EOF
 [kubernetes]
 name=Kubernetes
 baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
@@ -16,18 +17,19 @@ exclude=kube*
 EOF
 
 ## Install prerequisites.
-yum install -y yum-utils device-mapper-persistent-data lvm2 
+yum install -y yum-utils device-mapper-persistent-data lvm2
 
 ## Add docker repository.
 yum-config-manager -y --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 
 ## Install docker.
-yum makecache fast && yum -y install docker-ce-18.06.1.ce
+yum makecache fast && yum -y install docker-ce-3:18.09.9-3.*
 
 ## Create /etc/docker directory.
 mkdir /etc/docker
 
 # Setup daemon.
+#"insecure-registries": [masterIP,"docker.work.net"]
 cat > /etc/docker/daemon.json <<EOF
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
@@ -69,30 +71,32 @@ sed -i 's/^SELINUX=.*$/SELINUX=permissive/' /etc/selinux/config
 
 yum install -y kubelet-1.16.4 kubeadm-1.16.4 kubectl-1.16.4 --disableexcludes=kubernetes
 
-systemctl enable kubelet && systemctl start kubelet
+systemctl enable kubelet
+systemctl start kubelet
 
-cat <<EOF> /etc/sysctl.d/k8s.conf
+cat > /etc/sysctl.d/k8s.conf <<EOF
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
 sysctl --system
 echo "1" > /proc/sys/net/ipv4/ip_forward
 
-
 # 下载k8s.1.16.4所需要的镜像列表
-echo 'docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.16.4
-docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.1
-
-docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.1 k8s.gcr.io/pause:3.1
-docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.16.4 k8s.gcr.io/kube-proxy:v1.16.4' > ~/down-images.sh
-
+#echo 'docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.16.4
+#docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.1
+#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.1 k8s.gcr.io/pause:3.1
+#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.16.4 k8s.gcr.io/kube-proxy:v1.16.4' > ~/down-images-join.sh
+#
+#chmod +777 ~/down-images-join.sh
+#sh ~/down-images-join.sh
 chmod +777 ~/down-images.sh
 sh ~/down-images.sh
-
 # 执行节点加入操作
 # 示例： kubeadm join 192.168.229.129:6443 --token jrk73b.m6ly1m4pz5g7ymbm --discovery-token-ca-cert-hash sha256:18c361e1e5031ab1fb0c195b3dff6b2f3557c98db621cf34077afe66845e40ab
 # 下面的join_token要替换与具体的主节点的token , 主节点执行命令：kubeadm token list 查看可用的token列表，主节点创建新token命令：kubeadm token create
-kubeadm join 192.168.229.129:6443 --token join_token --discovery-token-ca-cert-hash sha256:18c361e1e5031ab1fb0c195b3dff6b2f3557c98db621cf34077afe66845e40ab
+# 必须加上--ignore-preflight-errors=all 否则会有异常 [ERROR DirAvailable--etc-kubernetes-manifests]: /etc/kubernetes/manifests is not empty
+#查看sha256命令  openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+kubeadm join 192.168.229.129:6443 --token xfaa1n.fjr6w8aeadtibfum --discovery-token-ca-cert-hash sha256:fdb1ce52723316b7dac9c0b42917790f8cbcdb89c57d1435d01c1c01014a0e4a --ignore-preflight-errors=all
 
 
 
