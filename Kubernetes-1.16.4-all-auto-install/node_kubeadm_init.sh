@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set ff=unix
 cat > /etc/yum.repos.d/kubernetes.repo <<EOF
 [kubernetes]
 name=Kubernetes
@@ -16,11 +17,17 @@ yum install -y yum-utils device-mapper-persistent-data lvm2
 ## Add docker repository.
 yum-config-manager -y --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 
+yum install wget container-selinux -y
+#wget https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
+yum install runc
+yum erase runc -y
+#rpm -ivh containerd.io-1.2.6-3.3.el7.x86_64.rpm
+dnf install https://mirrors.aliyun.com/docker-ce/linux/centos/7/x86_64/edge/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
 # 查看可用版本
 # yum list docker-ce --showduplicates | sort -r
-## Install docker.
-yum clean all && yum makecache && yum -y install docker-ce-3:18.09.9-3.* docker-ce-cli-1:18.09.9-3.* containerd.io # 需要指定版本可以写成docker-ce-18.03.1.ce
-
+## Install docker. docker-ce-18.09.9-3.el7.x86_64.rpm
+#yum clean all && yum makecache && yum -y install docker-ce-3:18.09.9-3.* docker-ce-cli-1:18.09.9-3.* containerd.io # 需要指定版本可以写成docker-ce-18.03.1.ce
+yum clean all && yum makecache && yum -y install docker-ce-18.09.9-3.* docker-ce-cli-18.09.9-3.* # 需要指定版本可以写成docker-ce-18.03.1.ce
 ## Create /etc/docker directory.
 sudo mkdir /etc/docker
 
@@ -99,8 +106,11 @@ sh down-images.sh
 
 
 sysctl net.bridge.bridge-nf-call-iptables=1
-#关闭swapoff
+#临时关闭关闭swapoff
 swapoff -a
+#永久关闭swapoff
+echo "vm.swappiness = 0">> /etc/sysctl.conf
+sysctl -p
 # 修改/etc/fstab永久关闭Swap
 cp -p /etc/fstab /etc/fstab.bak$(date '+%Y%m%d%H%M%S')
 # Redhat

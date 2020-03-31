@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 echo "--------change hosts--------"
+set ff=unix
 cat >/etc/hosts <<EOF
-192.168.229.130 server02
+192.168.5.128 server01
+192.168.5.129 server02
+192.168.5.130 server03
 EOF
 
+#centos8 用命令
+nmcli c reload
+#centos8 以下 用命令
 systemctl restart network
 cat >/etc/yum.repos.d/kubernetes.repo <<EOF
 [kubernetes]
@@ -20,7 +26,12 @@ EOF
 yum install -y yum-utils device-mapper-persistent-data lvm2
 
 ## Add docker repository.
-yum-config-manager -y --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+sudo yum-config-manager -y --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+
+yum install runc
+yum erase runc -y
+#rpm -ivh containerd.io-1.2.6-3.3.el7.x86_64.rpm
+dnf install https://mirrors.aliyun.com/docker-ce/linux/centos/7/x86_64/edge/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
 
 ## Install docker.
 yum makecache fast && yum -y install docker-ce-3:18.09.9-3.*
@@ -89,6 +100,7 @@ echo "1" > /proc/sys/net/ipv4/ip_forward
 #
 #chmod +777 ~/down-images-join.sh
 #sh ~/down-images-join.sh
+
 chmod +777 ~/down-images.sh
 sh ~/down-images.sh
 # 执行节点加入操作
@@ -99,4 +111,4 @@ sh ~/down-images.sh
 kubeadm join 192.168.229.129:6443 --token xfaa1n.fjr6w8aeadtibfum --discovery-token-ca-cert-hash sha256:fdb1ce52723316b7dac9c0b42917790f8cbcdb89c57d1435d01c1c01014a0e4a --ignore-preflight-errors=all
 
 
-
+kubectl get nodes

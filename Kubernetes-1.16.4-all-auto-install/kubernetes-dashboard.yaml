@@ -115,8 +115,8 @@ spec:
     spec:
       containers:
       - name: kubernetes-dashboard
-        image: mirrorgooglecontainers/kubernetes-dashboard-amd64:v1.10.1
-        #v2.0.0-beta5 浠ヤ笂鎵嶆敮鎸並ubernetes 1.16
+        image: k8s.gcr.io/kubernetes-dashboard-amd64:v1.10.1
+        #v2.0.0-beta5 以上才支持Kubernetes 1.16
         ports:
         - containerPort: 8443
           protocol: TCP
