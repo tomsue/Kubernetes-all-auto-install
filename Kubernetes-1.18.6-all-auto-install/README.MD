@@ -1,7 +1,7 @@
-# Kubernetes-1.16.4-all-auto-install
+# Kubernetes-1.18.3-all-auto-install
 
 ### 项目介绍
-个人整理的Centos7.x +Docker3:18.09.9-3+ Kubernetes-1.16.4 + Dashboard-1.8.3 无 CVE-2018-1002105 漏洞的master,node节点全自动快速一键安装部署文件，适用于测试环境，生产环境的快速安装部署
+个人整理的Centos7.x +Docker3:18.09.9-3+ Kubernetes-1.18.3 + Dashboard-1.8.3 无 CVE-2018-1002105 漏洞的master,node节点全自动快速一键安装部署文件，适用于测试环境，生产环境的快速安装部署
 
 ### 参考文档
 https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/
@@ -24,7 +24,7 @@ sed -i "s/192.168.229.129/your_master_centos_ip/g" /root/*.sh
 
 ## master节点安装教程
 
-1. 执行node-kubeadm-init.sh,安装kubernetes 1.16.4环境
+1. 执行node-kubeadm-init.sh,安装kubernetes 1.18.3环境
 
 ```
 sh /root/node-kubeadm-init.sh

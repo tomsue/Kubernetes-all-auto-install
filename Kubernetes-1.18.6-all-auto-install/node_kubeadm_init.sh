@@ -66,7 +66,7 @@ systemctl stop firewalld
 setenforce 0
 sed -i 's/^SELINUX=.*$/SELINUX=permissive/' /etc/selinux/config
 
-yum install -y kubelet-1.16.4 kubeadm-1.16.4 kubectl-1.16.4 --disableexcludes=kubernetes
+yum install -y kubelet-1.18.3 kubeadm-1.18.3 kubectl-1.18.3 --disableexcludes=kubernetes
 
 systemctl enable kubelet
 systemctl start kubelet
@@ -77,11 +77,11 @@ net.bridge.bridge-nf-call-iptables = 1
 EOF
 sysctl --system
 
-# 下载k8s.1.16.4所需要的镜像列表
-#echo 'docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver-amd64:v1.16.4
-#docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager-amd64:v1.16.4
-#docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler-amd64:v1.16.4
-#docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.16.4
+# 下载k8s.1.18.3所需要的镜像列表
+#echo 'docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver-amd64:v1.18.3
+#docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager-amd64:v1.18.3
+#docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler-amd64:v1.18.3
+#docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.18.3
 #docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/etcd-amd64:3.2.24
 #docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/etcd:3.3.15-0
 #docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.1
@@ -96,10 +96,10 @@ sysctl --system
 #docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/coredns:1.6.2 k8s.gcr.io/coredns:1.6.2
 #docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/etcd-amd64:3.2.24 k8s.gcr.io/etcd:3.2.24
 #docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/etcd:3.3.15-0 k8s.gcr.io/etcd:3.3.15-0
-#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler-amd64:v1.16.4 k8s.gcr.io/kube-scheduler:v1.16.4
-#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager-amd64:v1.16.4 k8s.gcr.io/kube-controller-manager:v1.16.4
-#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver-amd64:v1.16.4 k8s.gcr.io/kube-apiserver:v1.16.4
-#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.16.4 k8s.gcr.io/kube-proxy:v1.16.4' > ~/down-images.sh
+#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-scheduler-amd64:v1.18.3 k8s.gcr.io/kube-scheduler:v1.18.3
+#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-controller-manager-amd64:v1.18.3 k8s.gcr.io/kube-controller-manager:v1.18.3
+#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-apiserver-amd64:v1.18.3 k8s.gcr.io/kube-apiserver:v1.18.3
+#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.18.3 k8s.gcr.io/kube-proxy:v1.18.3' > ~/down-images.sh
 
 chmod +777 down-images.sh
 sh down-images.sh
@@ -118,8 +118,8 @@ sed -i "s/\/dev\/mapper\/rhel-swap/\#\/dev\/mapper\/rhel-swap/g" /etc/fstab
 # CentOS
 sed -i "s/\/dev\/mapper\/centos-swap/\#\/dev\/mapper\/centos-swap/g" /etc/fstab
 #这边ip必须与配置文件ip一致
-kubeadm init --kubernetes-version=1.16.4 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.229.129
-
+# kubeadm init --kubernetes-version=1.18.3 --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.99.175
+sudo kubeadm init --kubernetes-version=1.18.3 --pod-network-cidr=10.244.0.0/16
 sudo mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 #修改环境配置

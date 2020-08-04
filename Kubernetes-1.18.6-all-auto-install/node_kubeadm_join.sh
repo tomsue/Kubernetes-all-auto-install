@@ -80,7 +80,7 @@ setenforce 0
 sed -i 's/^SELINUX=.*$/SELINUX=permissive/' /etc/selinux/config
 
 
-yum install -y kubelet-1.16.4 kubeadm-1.16.4 kubectl-1.16.4 --disableexcludes=kubernetes
+yum install -y kubelet-1.18.3 kubeadm-1.18.3 kubectl-1.18.3 --disableexcludes=kubernetes
 
 systemctl enable kubelet
 systemctl start kubelet
@@ -92,11 +92,11 @@ EOF
 sysctl --system
 echo "1" > /proc/sys/net/ipv4/ip_forward
 
-# 下载k8s.1.16.4所需要的镜像列表
-#echo 'docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.16.4
+# 下载k8s.1.18.3所需要的镜像列表
+#echo 'docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.18.3
 #docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.1
 #docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/pause:3.1 k8s.gcr.io/pause:3.1
-#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.16.4 k8s.gcr.io/kube-proxy:v1.16.4' > ~/down-images-join.sh
+#docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/kube-proxy-amd64:v1.18.3 k8s.gcr.io/kube-proxy:v1.18.3' > ~/down-images-join.sh
 #
 #chmod +777 ~/down-images-join.sh
 #sh ~/down-images-join.sh
