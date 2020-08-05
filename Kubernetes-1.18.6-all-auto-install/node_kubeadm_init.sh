@@ -27,7 +27,7 @@ dnf install https://mirrors.aliyun.com/docker-ce/linux/centos/7/x86_64/edge/Pack
 # yum list docker-ce --showduplicates | sort -r
 ## Install docker. docker-ce-18.09.9-3.el7.x86_64.rpm
 #yum clean all && yum makecache && yum -y install docker-ce-3:docker-ce-18.09.9 docker-ce-cli-1:docker-ce-18.09.9 containerd.io # 需要指定版本可以写成docker-ce-18.03.1.ce
-yum clean all && yum makecache && yum -y install docker-ce-docker-ce-18.09.9 docker-ce-cli-docker-ce-18.09.9 # 需要指定版本可以写成docker-ce-18.03.1.ce
+yum clean all && yum makecache && yum -y install docker-ce-18.09.9 docker-ce-cli-18.09.9 containerd.io # 需要指定版本可以写成docker-ce-18.03.1.ce
 ## Create /etc/docker directory.
 sudo mkdir /etc/docker
 
